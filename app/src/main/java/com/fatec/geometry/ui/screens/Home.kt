@@ -1,6 +1,7 @@
 package com.fatec.geometry.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import com.fatec.geometry.ui.components.Container
 import com.fatec.geometry.ui.components.ShapeCard
 import com.fatec.geometry.ui.theme.Black
 import com.fatec.geometry.ui.theme.White
+import kotlin.math.PI
 import kotlin.math.pow
 
 @Composable
@@ -32,7 +34,19 @@ fun Home(
         mutableStateOf(null)
     }
 
-    var calculateSquare: String by remember {
+    var side: String by remember {
+        mutableStateOf("")
+    }
+
+    var base: String by remember {
+        mutableStateOf("")
+    }
+
+    var height: String by remember {
+        mutableStateOf("")
+    }
+
+    var radius: String by remember {
         mutableStateOf("")
     }
 
@@ -71,9 +85,9 @@ fun Home(
         when (shape) {
             Shape.SQUARE -> {
                 OutlinedTextField(
-                    value = calculateSquare,
+                    value = side,
                     onValueChange = {
-                        calculateSquare = it
+                        side = it
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -90,17 +104,87 @@ fun Home(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
-                    ),
-
+                    )
                 )
             }
 
             Shape.TRIANGLE -> {
+                Column (
+                    verticalArrangement = Arrangement.spacedBy(
+                        space = 40.dp
+                    )
+                ) {
+                    OutlinedTextField(
+                        value = base,
+                        onValueChange = {
+                            base = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        label = {
+                            Text(
+                                text = "Base"
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Type side here"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
 
+                    OutlinedTextField(
+                        value = height,
+                        onValueChange = {
+                            height = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        label = {
+                            Text(
+                                text = "Height"
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Type height here"
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
+                }
             }
 
             Shape.CIRCLE -> {
-
+                OutlinedTextField(
+                    value = radius,
+                    onValueChange = {
+                        radius = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    label = {
+                        Text(
+                            text = "Height"
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            text = "Type height here"
+                        )
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    )
+                )
             }
 
             else -> {
@@ -113,9 +197,13 @@ fun Home(
             }
         }
 
-        result?.let {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = result.toString()
+                text = result?.let { result.toString() } ?: run { "Waiting to calculate..." }
             )
         }
 
@@ -124,9 +212,9 @@ fun Home(
                 .fillMaxWidth(),
             onClick = {
                 when (shape) {
-                    Shape.SQUARE -> result = calculateSquare.toDouble().pow(2.0)
-                    Shape.TRIANGLE -> TODO()
-                    Shape.CIRCLE -> TODO()
+                    Shape.SQUARE -> result = side.toDouble().pow(2.0)
+                    Shape.TRIANGLE -> result = (base.toDouble() * height.toDouble()) / 2
+                    Shape.CIRCLE -> result = PI * radius.toDouble().pow(2.0)
                     else -> Unit
                 }
             },
